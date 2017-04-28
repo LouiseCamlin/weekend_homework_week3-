@@ -17,6 +17,13 @@ class Film
     @id = film['id'].to_i
   end
 
+  def update()
+    sql = "
+    UPDATE films SET (title, price) = ('#{ title }, #{ price })
+    WHERE id = #{@id}"
+    SqlRunner.run(sql)
+  end
+
   def Film.all()
     sql = "SELECT * FROM films"
     return Film.get_many(sql)

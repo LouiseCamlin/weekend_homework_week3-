@@ -29,11 +29,17 @@ class Customer
    SqlRunner.run(sql)
  end
 
+ def update()
+   sql = "
+   UPDATE customers SET (name, funds) = ('#{ name }, #{ funds })
+   WHERE id = #{@id}"
+   SqlRunner.run(sql)
+ end
+
   def Customer.get_many(sql)
     customers = SqlRunner.run(sql)
     return customers.map { |customer| Customer.new(customer)}
   end
-
 
   def films
     sql = "SELECT films.* FROM films
@@ -41,6 +47,16 @@ class Customer
           WHERE customer_id = #{@id}"
     return Film.get_many(sql)
   end
+
+  def tickets
+    sql = "SELECT tickets.* FROM tickets
+          LEFT JOIN films ON tickets.customer_id = tickets.id
+          WHERE customer_id = #{@id}"
+    return Ticket.get_many(sql)
+  end
+
+
+
 
 
 end

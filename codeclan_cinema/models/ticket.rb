@@ -2,7 +2,8 @@ require_relative('../db/sql_runner.rb')
 
 class Ticket
 
-  attr_reader :id, :film_id, :customer_id
+  attr_reader :id
+  attr_accessor :film_id, :customer_id
 
   def initialize(params)
     @id = params['id'].to_i if params['id']
@@ -14,6 +15,13 @@ class Ticket
     sql = "INSERT INTO tickets ( customer_id, film_id ) VALUES ( #{ @customer_id}, #{ @film_id } ) RETURNING id;"
     ticket = SqlRunner.run(sql).first
     @id = ticket['id'].to_i
+  end
+
+  def update()
+    sql = "
+    UPDATE tickets SET (film_id, customer_id) = (#{ film_id }, #{ customer_id })
+    WHERE id = #{@id}"
+    SqlRunner.run(sql)
   end
 
   def Ticket.all()
