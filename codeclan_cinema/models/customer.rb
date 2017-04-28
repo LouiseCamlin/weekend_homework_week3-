@@ -23,6 +23,11 @@ class Customer
     
     return Customer.get_many(sql)
   end
+
+  def delete()
+    sql = "DELETE FROM customers WHERE id = #{id};"
+    SqlRunner.run(sql)
+  end
  
  def Customer.delete_all() 
    sql = "DELETE FROM customers"
