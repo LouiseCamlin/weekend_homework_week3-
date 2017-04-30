@@ -1,5 +1,5 @@
 require_relative('../db/sql_runner.rb')
-
+require_relative('./film.rb')
 
 class Customer
 
@@ -29,39 +29,42 @@ class Customer
     SqlRunner.run(sql)
   end
  
- def Customer.delete_all() 
-   sql = "DELETE FROM customers"
-   SqlRunner.run(sql)
- end
+  def Customer.delete_all() 
+    sql = "DELETE FROM customers"
+    SqlRunner.run(sql)
+  end
 
- def update()
-   sql = "
-   UPDATE customers SET (name, funds) = ('#{ name }, #{ funds })
-   WHERE id = #{@id}"
-   SqlRunner.run(sql)
- end
+  def update()
+    sql = "UPDATE customers SET (name, funds) = ('#{ name }, #{ funds })
+         WHERE id = #{@id}"
+    SqlRunner.run(sql)
+  end
+
+  def films
+    sql = "SELECT films.title FROM films
+          INNER JOIN tickets ON tickets.film_id = films.id
+          WHERE customer_id = #{@id};"
+    return Film.get_many(sql)
+  end
+
+  def number_of_tickets
+    return films.count
+  end
+
+  def Customer.find(id)
+    sql = "SELECT customers.name FROM customers WHERE id = #{id};"
+    return Customer.get_many(sql)
+  end
 
   def Customer.get_many(sql)
     customers = SqlRunner.run(sql)
     return customers.map { |customer| Customer.new(customer)}
   end
 
-  def films
-    sql = "SELECT films.* FROM films
-          INNER JOIN tickets ON tickets.customer_id = films.id
-          WHERE customer_id = #{@id}"
-    return Film.get_many(sql)
-  end
+  # def buy_ticket(price)
+  #   sql = "SELECT funds FROM customers "
 
-  def tickets
-    sql = "SELECT tickets.* FROM tickets
-          LEFT JOIN films ON tickets.customer_id = tickets.id
-          WHERE customer_id = #{@id}"
-    return Ticket.get_many(sql)
-  end
-
-
-
-
+  #   customer.update
+  # end
 
 end

@@ -12,20 +12,18 @@ class Film
   end
 
   def save()
-    sql = "INSERT INTO films (title, price) VALUES ('#{ @title }', #{ @price }) RETURNING id"
+    sql = "INSERT INTO films (title, price) VALUES ('#{ @title }', #{ @price }) RETURNING id;"
     film = SqlRunner.run(sql).first
     @id = film['id'].to_i
   end
 
   def update()
-    sql = "
-    UPDATE films SET (title, price) = ('#{ title }, #{ price })
-    WHERE id = #{@id}"
+    sql = "UPDATE films SET (title, price) = ('#{ title }, #{ price }) WHERE id = #{@id};"
     SqlRunner.run(sql)
   end
 
   def Film.all()
-    sql = "SELECT * FROM films"
+    sql = "SELECT * FROM films;"
     return Film.get_many(sql)
   end
 
@@ -35,15 +33,24 @@ class Film
   end
 
   def Film.delete_all() 
-    sql = "DELETE FROM films"
+    sql = "DELETE FROM films;"
     SqlRunner.run(sql)
   end
 
   def customers
-    sql = "SELECT customers.* FROM customers
-          INNER JOIN tickets ON tickets.film_id = customers.id
-          WHERE film_id = #{@id}"
+    sql = "SELECT customers.name FROM customers
+          INNER JOIN tickets ON tickets.customer_id = customers.id
+          WHERE film_id = #{@id};"
     return Customer.get_many(sql)
+  end
+
+  def tickets
+    return customers.count
+  end
+
+  def Film.find(id)
+    sql = "SELECT films.title FROM films WHERE id = #{id};"
+    return Film.get_many(sql)
   end
 
   def Film.get_many(sql)

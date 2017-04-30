@@ -1,4 +1,6 @@
 require_relative('../db/sql_runner.rb')
+require_relative('./film.rb')
+# require_relative('./customer.rb')
 
 class Ticket
 
@@ -38,6 +40,17 @@ class Ticket
     sql = "DELETE FROM tickets"
     SqlRunner.run(sql)
   end
+
+  def Ticket.find(id)
+    sql = "SELECT * FROM tickets WHERE id = #{id};"
+    return Ticket.get_many(sql)
+  end
+
+  # def buy_ticket(customer, film)
+  #   Sql = "SELECT prices FROM films WHERE id = #{@film_id};"
+  #   customer.update
+  # end
+
 
   def Ticket.get_many(sql)
     tickets = SqlRunner.run(sql)
